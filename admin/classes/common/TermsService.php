@@ -18,7 +18,7 @@
 
 
 
-class TermsService extends Object {
+class TermsService extends CoralObject {
 
 	protected $config;
 	protected $error;

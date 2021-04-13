@@ -18,7 +18,7 @@
 
 
 
-class SFXService extends Object {
+class SFXService extends CoralObject {
 
 
 	protected $issn;
@@ -60,6 +60,7 @@ class SFXService extends Object {
 
 
 		$this->open_url = $open_url . "&sfx.ignore_date_threshold=1&sfx.response_type=simplexml" . $stringAppend;
+		
 
 
 	}

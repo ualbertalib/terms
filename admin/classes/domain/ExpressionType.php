@@ -58,15 +58,16 @@ class ExpressionType extends DatabaseObject {
 
 		$query = ("SELECT E.expressionID
 					FROM Document D, SFXProvider SP, Expression E
-					WHERE D.documentID = E.documentID
+					WHERE D.documentId = E.documentId
 					AND (D.expirationDate is null || D.expirationDate = '0000-00-00')
 					AND SP.documentID = D.documentID
 					AND E.productionUseInd='1'
-					AND E.expressionTypeID = '" . $this->expressionTypeID . "'
-					AND SP.shortName = '" . $resourceName . "';");
+					AND E.expressionTypeID = ?
+					AND SP.shortName = ?" ); 
 
 
-		$result = $this->db->processQuery($query, 'assoc');
+		// NOTE the 'is' in the function below (i = integer, s=string) is the types parameter for mysqli_stmt::bind_param
+		$result = $this->db->processPreparedQuery($query,'assoc','is',$this->expressionTypeID,$resourceName);
 
 		$objects = array();
 
@@ -95,16 +96,17 @@ class ExpressionType extends DatabaseObject {
 
 		$query = ("SELECT distinct E.expressionTypeID
 					FROM Document D, SFXProvider SP, Expression E, ExpressionType ET
-					WHERE D.documentID = E.documentID
+					WHERE D.documentId = E.documentId
 					AND (D.expirationDate is null || D.expirationDate = '0000-00-00')
 					AND SP.documentID = D.documentID
 					AND E.productionUseInd='1'
 					AND ET.expressionTypeID = E.expressionTypeID
-					AND SP.shortName = '" . $resourceName . "'
+					AND SP.shortName = ?
 					ORDER BY ET.shortName;");
+                
+               $result = $this->db->processPreparedQuery($query,'assoc','s',$resourceName);
 
-
-		$result = $this->db->processQuery($query, 'assoc');
+		//$result = $this->db->processQuery($query, 'assoc');
 
 		$expressionTypeArray = array();
 

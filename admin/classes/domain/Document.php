@@ -29,10 +29,10 @@ class Document extends DatabaseObject {
 
 		$query = "SELECT date_format(MAX(signatureDate), '%m/%d/%Y') lastSignatureDate
 					FROM Signature S, Document D
-					WHERE D.documentID = S.documentID
+					WHERE D.documentId = S.DocumentId
 					AND (D.expirationDate is null || D.expirationDate = '0000-00-00')
 					AND D.documentID = " . $this->documentID . "
-					GROUP BY S.documentID
+					GROUP BY S.documentId
 					ORDER BY 1;";
 
 		$result = $this->db->processQuery($query, 'assoc');

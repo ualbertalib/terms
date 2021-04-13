@@ -11,7 +11,6 @@ body {
  font-family: "arial";
  font-size: 10pt;
  font-weight: heavy;
- background: #3D545D;
  margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
  padding: 0;
  text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the container table */
@@ -19,18 +18,185 @@ body {
 }
 
 
-a {color:#3D545D;font-size:9pt;}
-a:active {color:#94a9be;}
-a:focus {color:#94a9be; outline: none; -moz-outline-style: none;}
-a.smallLink {font-size:95%; }
 
-smallText{font-size:90%;}
+div.top_bar {
+float:none;
+background-color:#0e2a15;
+height:4.6em;
+background-image:url(http://library.ualberta.ca/images/template2010/top_back.jpg);
+background-position:top center;
+background-repeat:no-repeat;
+}
 
-.headerText {font-size:160%;font-weight:bold; }
-.titleText {font-size:130%;font-weight:bold; }
+div.content {
+width:61em;
+float:none;
+min-height:40em;
+margin:auto;
+text-align:left;
+}
 
-div.shaded{background:#f4f8fc;}
-div.darkShaded{background:#3D545D; color: white;}
-img {border:0;}
+h1 {
+width:19em;
+height:4.5em;
+background-image:url(http://library.ualberta.ca/images/template2010/logo.jpg);
+background-repeat:no-repeat;
+margin-top:-2.4em;
+margin-left:12%;
+}
+h1 em{
+	display:none;
+}
+div.footer_wrap {
+width:100%;
+float:left;
+padding:1em 0 0 0;
+background-color:#2c2e2a;
+color:#fff;
+margin-top:5em;
+height:10em;
+}
 
+div.footer_wrap a {
+color:#fff;
+}
 
+div.library_footer {
+width:63em;
+float:none;
+padding-bottom:1em;
+height:14em;
+/**background-image:url(../images/template2010/footer.jpg);**/
+
+margin:auto;
+}
+
+div.library_footer ul {
+font-size:0.7em;
+line-height:1.7em;
+float:left;
+margin-right:5.2em;
+max-width:20em;
+}
+h3{
+	margin:0;
+}
+div.library_footer ul h3 {
+color:#fff8b9;
+letter-spacing:0;
+background-color:transparent;
+margin-left:0;
+padding:0;
+}
+div.library_footer ul li a.sitemap_link{
+	font-weight:bold;
+	display:block;
+	margin-top:4em;
+}
+div.uafooter-wrap{
+	width:100%;
+	background-color:#000;
+	float:left;
+	height:8em;
+	margin-top:8em;
+}
+div.uafooter {
+text-align:left;
+width:63em;
+height:1.5em;
+padding:0.5em 0;
+float:none;
+font-family:Verdana,Arial,Helvetica,sans-serif;
+margin:auto;
+
+}
+
+div.uafooter h2 {
+margin-top:-1.4em;
+font-size:0.7em;
+font-weight:700;
+}
+
+div.uafooter a {
+text-decoration:none;
+font-weight:700;
+font-family:Verdana,Arial,Helvetica,sans-serif;
+}
+
+div.uafooter ul {
+	list-style:none;
+font-size:0.7em;
+margin:0.5em 2em 0.5em 0;
+float:right;
+}
+
+div.uafooter ul li {
+padding:0 10px 0 0;
+float:left;
+	list-style:none;
+}
+
+div.uafooter ul li a {
+text-decoration:none;
+color:#999;
+font-weight:400;
+}
+
+div.lsfooter {
+margin-left:3em;
+}
+div.content{
+	font-size:14px;
+	line-height:23px;
+}
+a, a.visited, a.active{
+	text-decoration:none;
+	font-weight:bold;
+	color:#0b800d;
+	font-size:15px;
+}
+a.hover{
+	color:#000;
+}
+a.lists{
+	text-decoration:none;
+	font-size:16px;
+	margin:5px 0 5px 100px;
+	background-color:#333;
+	padding:8px;
+	display:block;
+	color:#fff;
+	width:300px;
+	letter-spacing:1px;
+	font-weight:normal;
+}
+a.lists:hover{
+	background-color:#666;
+}
+ul.gen{
+	width:370px;
+	float:left;
+	margin:0;
+	padding:0;
+}
+ul#first{
+		margin-right:100px;
+}
+ul.gen li{
+	list-style:none;
+	border-bottom:solid 1px #666;
+	margin:0;
+	padding:4px 0;
+}
+ul.db{
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+ul.db li{
+	margin:0 0 20px 0;
+	border-bottom:2px solid #000;
+}
+ul.db li ul li{
+	border-bottom:none;
+}

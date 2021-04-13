@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors',1);
+
+header('Content-Type:text/html; charset=UTF-8');
 
 // variables for permitted/prohibited qualifiers (this should match up with the available qualifiers in the license module)
 //permitted terms will display green checkbox
@@ -25,6 +28,9 @@ $prohibitedQualifier = 'Prohibited';
 */
 
 include_once 'directory.php';
+
+$displayHTML = '';
+$interLibraryLoadHTML = '';
 
 //get the passed in ISSN or ISBN
 if (isset($_GET['issn'])) $issn = $_GET['issn']; else $issn='';
@@ -56,24 +62,23 @@ if (($isbn == '') && ($issn == '')){
 				$expressionType = new ExpressionType(new NamedArguments(array('primaryKey' => $typeID)));
 
 				$pageTitle = $expressionType->shortName . " License Terms";
-				$displayHTML = "<div class='darkShaded' style='width:664px; padding:8px; margin:0 0 7px 0;'><span class='headerText'>" . $expressionType->shortName . " Terms</span>&nbsp;&nbsp;for " . $termsToolObj->getTitle() . "</div>";
+				$displayHTML = "<h2>" . $expressionType->shortName . " terms for <em>" . $termsToolObj->getTitle() . "</em></h2>";
 
-
-				$displayHTML .= "<div style='margin-left:5px;'>";
+				$displayHTML .= "<ul class='db'>";
 
 				$orderedTargetsArray = array();
 				$orderedTargetsArray = $expressionType->reorderTargets($targetsArray);
 
 				$targetArray = array();
 				foreach ($orderedTargetsArray as $i => $targetArray){
-					$displayHTML .= "<span class='titleText'>" . $targetArray['public_name'] . "</span><br />";
+					$displayHTML .= "<li><h3>" . ($targetArray['public_name']) . "</h3>";
 
 					$expressionArray = array();
 					$expressionArray = $expressionType->getExpressionsByResource($targetArray['public_name']);
 
 					//if no expressions are defined for this resource / expression type combination
 					if (count($expressionArray) == '0'){
-						$displayHTML .= "No " . $expressionType->shortName . " terms are defined.<br /><br />";
+						$displayHTML .= "No " . ($expressionType->shortName) . " terms are defined.";
 					}else{
 
 						//loop through each expression for this resource / expression type combination
@@ -101,25 +106,25 @@ if (($isbn == '') && ($issn == '')){
 								$effectiveDate = format_date($document->effectiveDate);;
 							}
 
-							$displayHTML .= "Terms as of " . format_date($expression->getLastUpdateDate) . ".  ";
+							/*$displayHTML .= "Terms as of " . $expression->getLastUpdateDate . ".  ";*/
 
-							$displayHTML .= "The following terms apply ONLY to articles accessed via <a href='" . $targetArray['target_url'] . "' target='_blank'>" . $targetArray['public_name'] . "</a><br /><br />";
+							$displayHTML .= "The following terms apply ONLY to articles accessed via <a href='" . $targetArray['target_url'] . "' target='_blank'>" . html_entity_decode($targetArray['public_name']) . "</a>";
 
-							$displayHTML .= "<div style='margin:0 0 30px 20px;'>";
+							$displayHTML .= "<div>";
 
-							$displayHTML .= "<div class='shaded' style='width:630px; padding:3px;'>";
-							$displayHTML .= "<b>" . $expressionType->shortName . " Notes:</b>&nbsp;&nbsp;" . $qualifierImage;
+							$displayHTML .= "<div>";
+							$displayHTML .= "<b>" . $expressionType->shortName . " Notes:</b>" . $qualifierImage;
 
 							//start bulletted list
 							$displayHTML .= "<ul>\n";
 
 							//first in the bulleted list will be the list of qualifiers, if applicable
 							if (count($qualifierArray) > 0){
-								$displayHTML .= "<li>Qualifier: " . implode(",", $qualifierArray) . "</li>\n";
+								$displayHTML .= "<li>" . implode(",", $qualifierArray) . "</li>\n";
 							}
 
 							foreach ($expression->getExpressionNotes as $expressionNote){
-								$displayHTML .= "<li>" . $expressionNote->note . "</li>\n";
+								$displayHTML .= "<li>" . ($expressionNote->note) . "</li>\n";
 							}
 
 							$displayHTML .= "</ul>\n";
@@ -128,20 +133,29 @@ if (($isbn == '') && ($issn == '')){
 
 							//only display 'show license snippet' if there's actual license document text
 							if ($expression->documentText){
-								$displayHTML .= "<br />";
-
-								$displayHTML .= "<div id='div_hide_" . $expression->expressionID . "_" . $i . "' style='width:600px;'>";
-								$displayHTML .= "<a href='javascript:void(0);' class='showText smallLink' value='" . $expression->expressionID . "_" . $i . "'><img src='images/arrowright.gif'></a>&nbsp;&nbsp;<a href='javascript:void(0);' class='showText' value='" . $expression->expressionID . "_" . $i . "'>view license snippet</a>";
-								$displayHTML .= "</div>";
+								$displayHTML .= "";
+                                                                 
+                                                                //Custom code by Jeremy March 26 2011,
+                                                                // do not display the View License Snippet unless the expression ID=2 (InterlibraryLoans
+                                                                if ($expression->expressionID==2){
+                                                                    $displayHTML .= "<div id='div_hide_" . $expression->expressionID . "_" . $i . "' >";                                                                   
+                                                                    $displayHTML .= "<a href='javascript:void(0);' class='showText smallLink' value='" . $expression->expressionID . "_" . $i . "'><img src='images/arrowright.gif'></a>&nbsp;&nbsp;<a href='javascript:void(0);' class='showText' value='" . $expression->expressionID . "_" . $i . "'>view license snippet</a>";                                                                
+                                                                    $displayHTML .= "</div>";
+                                                                }else{
+                                                                    //$displayHTML .= "<div id='div_hide_" . $expression->expressionID . "_" . $i . "' style='width:600px;'>";                                                                   
+                                                                    //$displayHTML .= "<a href='javascript:void(0);' class='showText smallLink' value='" . $expression->expressionID . "_" . $i . "'><img src='images/arrowright.gif'></a>&nbsp;&nbsp;<a href='javascript:void(0);' class='showText' value='" . $expression->expressionID . "_" . $i . "'>view license snippet</a>";                                                                
+                                                                    //$displayHTML .= "</div>";                                                                    
+                                                                }
+								
 
 								$displayHTML .= "<div id='div_display_" . $expression->expressionID . "_" . $i . "' style='display:none; width:600px;'>";
 								$displayHTML .= "<a href='javascript:void(0);' class='hideText smallLink' value='" . $expression->expressionID . "_" . $i . "'><img src='images/arrowdown.gif'></a>&nbsp;&nbsp;<a href='javascript:void(0);' class='hideText' value='" . $expression->expressionID . "_" . $i . "'>hide license snippet</a><br />";
-								$displayHTML .= "<div class='shaded' style='margin-top: 5px; padding:5px 5px 5px 18px;'>From the license agreement ($effectiveDate):<br><br><i>" . nl2br($expression->documentText) . "</i></div>";
+								$displayHTML .= "<div class='shaded'>From the license agreement ($effectiveDate):<br><br><i>" . ($expression->documentText) . "</i></div>";
 								$displayHTML .= "</div>";
 
 							}
 
-							$displayHTML .= "</div>";
+							$displayHTML .= "</li>";
 
 						//end expression loop
 						}
@@ -151,7 +165,7 @@ if (($isbn == '') && ($issn == '')){
 
 				//target foreach loop
 				}
-				$displayHTML .= "</div>";
+				$displayHTML .= "</ul>";
 
 			//expression type ID was not passed in - find out what expression types are available for these targets and prompt
 			}else{
@@ -178,16 +192,28 @@ if (($isbn == '') && ($issn == '')){
 				if (count($uniqueExpressionTypeArray) == 0){
 					$displayHTML = "Sorry, no available license expressions have been located in CORAL Licensing.";
 				}else{
-					$displayHTML .= "<div class='darkShaded' style='width:664px; padding:8px; margin:0 0 15px 0;'><span class='headerText'>Available Expression Types</span>&nbsp;&nbsp;for " . $termsToolObj->getTitle() . "</div>";
+					$displayHTML .= "<h2>Conditions of Use</span> for <em>" . ($termsToolObj->getTitle()) . "</em></h2><p>Use of electronic resources licensed for use at the University of Alberta is generally restricted to members of the University of Alberta community and to users of the Library's physical facilities. It is the responsibility of each user to ensure that he or she uses this product for individual, non-commercial educational or research purposes only, and does not systematically download or retain substantial portions of information.</p>  
+					<p>Specific terms and conditions of use for this title are listed below.<br /> If no terms are defined, please refer to the <a href='https://www.ualberta.ca/faculty-and-staff/copyright/student-staff-guide/ualberta-policies-procedures/fair-dealing-guidelines.html'>UA Fair Dealing Guidelines.</a></p>
+					";
 
 
 					//loop through each distinct displayable expression type
 					foreach ($uniqueExpressionTypeArray as $expressionTypeID){
 						$expressionType = new ExpressionType(new NamedArguments(array('primaryKey' => $expressionTypeID)));
-						$displayHTML .= "&nbsp;&nbsp;<a href='?issn=" . $issn . "&isbn=" . $isbn . "&typeID=" . $expressionType->expressionTypeID . "'>" . $expressionType->shortName . "</a><br />";
+                                                //Custom Code by Jeremy March 26 2011
+                                                //Seperate the ILL expression ($expressionTypeID: 2) from the rest of the links
+                                                if ($expressionTypeID==2){
+                                                    $interLibraryLoadHTML .= "<div>Staff Use</div>
+                                                                  <a href='?issn=" . $issn . "&isbn=" . $isbn . "&typeID=" . $expressionType->expressionTypeID . "'>" . ($expressionType->shortName) . "</a>
+                                                        
+                                                                        ";
+                                                }else{
+                                                    $displayHTML .= "<a class='lists' href='?issn=" . $issn . "&isbn=" . $isbn . "&typeID=" . $expressionType->expressionTypeID . "'>" . ($expressionType->shortName) . "</a>";
+                                                }
 					}
-
-					$displayHTML .= "<br />";
+                                        //Custom Code by Jeremy March 26 2011
+                                        //added . $interLibraryLoadHTML;
+					$displayHTML .= "<br />" . $interLibraryLoadHTML;
 				}
 
 			}
@@ -203,35 +229,36 @@ if (($isbn == '') && ($issn == '')){
 }
 
 
+
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $pageTitle; ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Conditions of Use</title>
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 <script type="text/javascript" src="js/plugins/jquery.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 </head>
 <body>
+	<div class="top_bar"></div>
+<a href="http://library.ualberta.ca"><h1><em>University of Alberta</em></h1></a>
 <center>
-<table style='text-align:left;'>
-	<tr>
-		<td style='vertical-align:top;'>
+	<div class="content">
+<?php echo html_entity_decode($displayHTML); ?>
 
-		<table style='background: white; padding:10px;'>
-			<tr>
-				<td><?php echo $displayHTML; ?></td>
-			</tr>
-		</table>
-		</td>
-	</tr>
-</table>
-
-<br />
+</div>
 
 </center>
+<div class="footer_wrap"> 
+		
+			<div class="uafooter-wrap"> 
+			<div class="uafooter"> 
+		
+			</div> 
+			</div> 
+		</div>
 </body>
 </html>
 

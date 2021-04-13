@@ -17,7 +17,7 @@
 */
 
 
-class DynamicObject extends Object {
+class DynamicObject extends CoralObject {
 
 	protected $properties = array();
 
